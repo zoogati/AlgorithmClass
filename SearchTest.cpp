@@ -19,7 +19,7 @@ using namespace std;
 
    const int size1 = 100;
    const int size2 = 10000;
-   const int size3 = 100000;
+   const int size3 = 1000000;
    const int size4 = 100000000;
    const int sizeKey = 1000;
    const int tests = 100;
