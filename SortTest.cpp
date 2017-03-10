@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <limits>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,6 +23,8 @@ const int size1 = 100;
 const int size2 = 10000;
 const int size3 = 1000000;
 const int tests = 15;
+
+int inf = std::numeric_limits<int>::max(); // Variable holding infinite representation.
 
 //Arrays with random integers
 
@@ -90,22 +93,75 @@ int arraySwap[tests];
             array[j+1] = key;
             swapCount++;
         }
-        arrayCompare[testNumber] = compareCount++;
-        arraySwap[testNumber] = swapCount++;
+        
+        arrayCompare[testNumber] = compareCount;
+        arraySwap[testNumber] = swapCount;
     }
     
 //Implementing Merge Sort (Recursive function call found in main)
-    void merge(int array[], int size, int low, int mid, int high, int testNumber) {
-        int leftIndex = mid - low - 1;
-        int rightIndex = high - mid;
-        int leftArray[(size/2)+1];          //Hold left half indices plus an end point (hence size / 2)
-        for (int i = 0; i < leftIndex+3; i++) {
-            leftArray[i] = i+1;
+    void merge(int array[], int low, int mid, int high, int testNumber) {
+        
+        int leftIndex = (mid - low)+1;
+        int rightIndex = (high - mid);
+        int leftArray[leftIndex+1];          //Hold left half indices plus an end point (hence size / 2)
+        int rightArray[rightIndex+1];         //Hold right half indices plus an end point
+        
+        for (int i = 0; i < leftIndex+1; i++) {
+            leftArray[i] = array[low + i];
         }
-        int rightArray[(size/2)+1];         //Hold right half indices
-        for (int i = 0; i < rightIndex+2; i++) {
-            rightArray[i] = i+1;
+        for (int i = 0; i < rightIndex+1; i++) {
+            rightArray[i] = array[mid + i];
         }
+        
+        leftArray[leftIndex] = inf;
+        rightArray[rightIndex] = inf;
+        /*
+        for (int i = 0; i < leftIndex+1; i++) {
+            cout << leftArray[i] << " ";
+        }
+        cout << endl;
+        for(int i = 0; i < rightIndex+1; i++) {
+            cout << rightArray[i] << " ";
+        }
+        cout <<endl;
+        */
+        int left = 0;
+        int right = 0;
+        
+        for (int i = low; i < high; i++) {
+            if (leftArray[left] <= rightArray[right]) {
+                compareCount++;
+                array[i] = leftArray[left];
+                swapCount++;
+                left += 1;
+            }
+            else {
+                compareCount++;
+                array[i] = rightArray[right];
+                swapCount++;
+                right += 1;
+            }
+        }
+        
+        arrayCompare[testNumber] = compareCount;
+        arraySwap[testNumber] = swapCount;
+    }
+    
+    void mergeSort(int array[], int low, int high, int testNumber) {
+            if (low < high) {
+                int mid = (low+high)/2;
+                mergeSort(array, low, mid, testNumber);
+                mergeSort(array, mid+1, high, testNumber);
+                merge(array, low, mid, high, testNumber);
+            }
+        }
+
+//TODO: Implement Merge Sort with Straight Insertion Sort when sub-array less than k keys, k is input size when insertionSort better than mergeSort.
+
+//Implementing Quick Sort (partitioning function for quick sort)
+    void partition(int array[], int size, int low, int mid, int high, int testNumber) {
+        
+        
     }
     
     int main() {
@@ -118,12 +174,23 @@ int arraySwap[tests];
         arrayGenRev(arrayRev3, size3);
         
         /*
-        for (int i = 0; i < size1; i++) {       Testing Array Generation
+        for (int i = 0; i < size1; i++) {       //Testing Array Generation
             cout << arrayFwd1[i] << " ";
         }
         cout << endl;
         for (int i = 0; i < size1; i++) {
             cout << arrayRev1[i] << " ";
         }
+        cout << endl;
         */
+    
+        mergeSort(arrayRev1, 0, size1, 1);
+    
+        for (int i = 0; i < size1; i++) {
+            cout << arrayRev1[i] << " ";
+        } 
+        
+        cout << endl;
+        
+        
     }
